@@ -5,7 +5,7 @@ from pymongo import MongoClient
 
 from dotenv import load_dotenv
 
-cluster = MongoClient("your_db_url")
+cluster = MongoClient("XXXX")
 db = cluster["SharkGang"]
 collection = db["Counts"]
 
@@ -39,6 +39,7 @@ async def on_message(message):
                 value = value - 1
             else:
                 value = 0
+                await message.channel.send(f"SharkBird has never defeated {thing_to_update}, its count is already zero")
             collection.update_one({"item":thing_to_update}, {"$set":{"value":value}})
 
     if message.content.startswith("+count"):
@@ -63,7 +64,13 @@ async def on_message(message):
 
     elif message.content.startswith("+"):
         thing_to_update = message.content.split("+")[1]
-        thing_to_update = thing_to_update.lower()
+        thing_to_update = thing_to_update.split(" ")
+        num_of_things = 1
+        if len(thing_to_update) == 2:
+            num_of_things = int(thing_to_update[1])
+        thing_to_update = thing_to_update[0].lower()
+        print(thing_to_update, num_of_things)
+
         myquery = {"item":thing_to_update}
         if (collection.count_documents(myquery) == 0):
             post = {"item":thing_to_update, "value": 1}
@@ -73,7 +80,7 @@ async def on_message(message):
             item = collection.find(query)
             for result in item:
                 value = result["value"]
-            value = value + 1
+            value = value + num_of_things
             collection.update_one({"item":thing_to_update}, {"$set":{"value":value}})
 
 client.run(TOKEN)
