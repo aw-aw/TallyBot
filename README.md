@@ -7,6 +7,8 @@ Quick Start:
 
 +item number: This will add "number" counts of "item" to the database, and return no response.
 
++items: This will return all of the items in the database.
+
 +count: This will return the total count of all tallied things in the database.
 
 +count item: This will return the tally count for the specified "item."
